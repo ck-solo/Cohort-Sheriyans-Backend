@@ -12,7 +12,7 @@ app.get('/notes',async (req,res)=>{
     const notes = await noteModel.find()
 
     res.json({
-        message:"Notes fetch successfully",
+        message:"Notess fetch successfully",
         notes
     })
 })
