@@ -40,7 +40,7 @@ app.patch("/notes/:index",(req,res)=>{
     const {title} = req.body
 
     if (!notes[index]) {
-        return res.status(404).json({ message: "Note not found" });
+        return res.status(404).json({ message: "Notes not found" });
     }
     notes[index].title = title
 
