@@ -41,6 +41,18 @@ app.delete('/notes/:index', (req, res)=>{
 
 /*PATCH /notes/:index */
 
+app.path('/notes/:index',(req ,res)=>{
+     const index = req.params.index
+     const {title} = req.title 
+
+     notes[index].title = title     
+
+     res.json({
+        message: "message updtaed successfully"
+     })
+
+    })
+
 
 
 app.listen('3000',()=>{
