@@ -37,7 +37,7 @@ app.patch('/notes/:index',(req,res)=>{
 
 
     res.json({
-        message:"Notes Updated Successfully"
+        message:"Note Updated Successfully"
     })
 })
 
