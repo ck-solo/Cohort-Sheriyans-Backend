@@ -4,7 +4,6 @@ const noteModel = require('./src/models/note.model')
 const app = express()
 app.use(express.json())
 
-connectToDB()
 
 
  
@@ -37,7 +36,7 @@ app.get('/notes', async (req,res)=>{
 app.delete('/notes/:id', async(req,res)=>{ 
     
     const noteId = req.params.id
-
+    
     await noteModel.findOneAndDelete({
         _id:noteId
     })
@@ -47,9 +46,27 @@ app.delete('/notes/:id', async(req,res)=>{
     })
 })
 
+app.patch('/notes/:id',async(req,res)=>{
+    
+    const noteId = req.params.id
+    const{title} = req.body
+
+    await noteModel.findOneAndUpdate({
+        _id : noteId
+
+    },{
+        title:title
+    })
+
+    res.json({
+        message:"update notes successfully"
+
+    })
+})
 
 
 
+connectToDB()
 app.listen(3000, (req,res)=>{
     console.log("Server is running on port 3000")
 })
