@@ -1,6 +1,7 @@
 .video-container {
   position: relative;
   display: flex;
+  flex-direction: column; /* stack video + overlay + button */
   justify-content: center;
   align-items: center;
   padding: 10px;
@@ -16,10 +17,10 @@ video {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
-/* Overlay styling */
+/* Expression overlay now placed between video & button */
 .expression-overlay {
-  position: absolute;
-  bottom: 15px;
+  margin-top: 10px; /* space below video */
+  margin-bottom: 10px; /* space above button */
   background: rgba(0, 0, 0, 0.6);
   color: #fff;
   font-weight: bold;
@@ -27,7 +28,23 @@ video {
   padding: 8px 16px;
   border-radius: 8px;
   text-transform: capitalize;
-  pointer-events: none;
+  text-align: center;
+}
+
+/* Button styling */
+button {
+  padding: 10px 20px;
+  background-color: #4cafef;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background-color: #379fdc;
 }
 
 /* Mobile view */
@@ -39,7 +56,13 @@ video {
 
   .expression-overlay {
     font-size: 1.2rem;
-    bottom: 10px;
     padding: 6px 12px;
+  }
+
+  button {
+    width: 100%;
+    max-width: 300px;
+    font-size: 1rem;
+    padding: 10px;
   }
 }

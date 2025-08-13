@@ -5,6 +5,8 @@ import "./FaceExpression.css";
 export default function FaceExpressionDetector() {
   const videoRef = useRef();
   const [expression, setExpression] = useState("");
+  const [modelsLoaded, setModelsLoaded] = useState(false);
+
 
   useEffect(() => {
     startVideo();
@@ -26,12 +28,17 @@ export default function FaceExpressionDetector() {
     const MODEL_URL = "/models"; // in public/models
     await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
     await faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL);
-
-    videoRef.current.addEventListener("play", detectExpression);
+     setModelsLoaded(true); // mark as loaded
+ 
   };
 
   // Detect expressions and show top one
   const detectExpression = async () => {
+    if (!modelsLoaded) {
+      console.warn("Models not loaded yet!");
+      return;
+    }
+    
     setInterval(async () => {
       const detections = await faceapi
         .detectAllFaces(videoRef.current, new faceapi.TinyFaceDetectorOptions())
@@ -44,13 +51,15 @@ export default function FaceExpressionDetector() {
       } else {
         setExpression("");
       }
-    }, 500);
+    }, 5000);
   };
 
   return (
     <div className="video-container">
       <video ref={videoRef} autoPlay muted playsInline />
       {expression && <div className="expression-overlay">{expression}</div>}
+
+      <button onClick={detectExpression}   >Detect Mood</button>
     </div>
   );
 }
