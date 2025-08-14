@@ -1,20 +1,30 @@
 .video-container {
   position: relative;
   display: flex;
-  flex-direction: column; /* stack video + overlay + button */
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
+  /* flex-direction: column;stack video + overlay + button */
+  background-color: red; 
+  padding: 2rem;
 }
 
+.heading{
+  font-size: 2rem;
+}
 video {
   width: 100%;
   height: auto;
-  max-width: 800px;
+  max-width: 400px; 
+  margin-left: 10rem;
+  margin-right: 10px;
   border-radius: 10px;
   background: black;
   object-fit: cover;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.text{
+  display: flex; 
+  align-items: center;
+  background-color: rebeccapurple;
 }
 
 /* Expression overlay now placed between video & button */
