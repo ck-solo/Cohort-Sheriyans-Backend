@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 useState;
 
+import './songs.css'
+
 const MoodSong = () => {
   const [ Songs, setSongs] = useState([
     {
@@ -27,7 +29,7 @@ const MoodSong = () => {
       <h2>Recommended Songs</h2>
 
         {Songs.map((song, index) => (
-          <div key={index}>
+          <div className="song" key={index}>
             <div className="title">
               <h3>{song.title}</h3>
               <p>{song.artist}</p>

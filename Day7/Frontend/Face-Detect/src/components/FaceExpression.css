@@ -1,8 +1,7 @@
 .video-container {
   position: relative;
   display: flex;
-  /* flex-direction: column;stack video + overlay + button */
-  background-color: red; 
+  /* flex-direction: column;stack video + overlay + button */ 
   padding: 2rem;
 }
 
@@ -23,8 +22,7 @@ video {
 
 .text{
   display: flex; 
-  align-items: center;
-  background-color: rebeccapurple;
+  align-items: center; 
 }
 
 /* Expression overlay now placed between video & button */

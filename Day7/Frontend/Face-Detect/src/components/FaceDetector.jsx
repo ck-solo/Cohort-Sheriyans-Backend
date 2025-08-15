@@ -55,12 +55,11 @@ export default function FaceExpressionDetector() {
   };
 
   return (
-    <div className="video-container">
-      <h2 className="heading">Live Mood Detection</h2>
+    <div className="video-container"> 
       <video ref={videoRef} autoPlay muted playsInline />
       <div className="text">
       {expression && <div className="expression-overlay">{expression}</div>}
-      <button onClick={detectExpression}   >Detect Mood</button>
+      <button onClick={detectExpression}>Detect Mood</button>
       </div>
     </div>
   );
