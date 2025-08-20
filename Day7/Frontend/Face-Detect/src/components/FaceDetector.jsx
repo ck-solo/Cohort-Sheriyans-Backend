@@ -1,9 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import * as faceapi from 'face-api.js';
 import "./FaceExpression.css"
-import axios from 'axios'
-
-export default function FacialExpression({setSongs}) {
+import axios from 'axios' 
+export default function FacialExpression({ setSongs }) {
     const videoRef = useRef();
 
     const loadModels = async () => {

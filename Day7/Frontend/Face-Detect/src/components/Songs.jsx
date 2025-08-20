@@ -3,27 +3,8 @@ useState;
 
 import './songs.css'
 
-const MoodSong = () => {
-  const [ Songs, setSongs] = useState([
-    {
-      title: "text_title",
-      artist: "text_artist",
-      url: "text_url",
-    },
-     {
-      title: "text_title",
-      artist: "text_artist",
-      url: "text_url",
-    },{
-      title: "text_title",
-      artist: "text_artist",
-      url: "text_url",
-    },{
-      title: "text_title",
-      artist: "text_artist",
-      url: "text_url",
-    },
-  ]);
+const MoodSong = ({Songs}) => {
+  
   return (
     <div className="mood-songs">
       <h2>Recommended Songs</h2>
