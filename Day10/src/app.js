@@ -1,11 +1,14 @@
-const express = require('express');
-const connected = require('./db/db')
-const routes = require('./routes/routes')
-const app = express()
+const express = require('express')
+const app  = express()
+const connectToDB = require('./db/db') 
+const router = require('./routes/auth.route')
+const cookieParser = require('cookie-parser')
+
+app.use(cookieParser())
 app.use(express.json())
 
+connectToDB()
+app.use('/auth',router)
 
-connected()
-app.use('/',routes)
 
 module.exports = app
