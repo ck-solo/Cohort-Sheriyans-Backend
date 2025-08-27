@@ -2,7 +2,7 @@ const { GoogleGenAI } = require("@google/genai");
 
 const ai = new GoogleGenAI({});
  
-async function generateImage(base64ImageFile){
+async function generateCaption(base64ImageFile){
 
   const contents = [
     {
@@ -17,9 +17,17 @@ async function generateImage(base64ImageFile){
 const response = await ai.models.generateContent({
   model: "gemini-2.5-flash",
   contents: contents,
+  config:{
+    systemInstruction:`
+    You are an expert in generating the caption for image.
+    You generate single caption for the image.
+    Your caption should be short and concise.
+    You use hashtags and emojis in the caption.
+    `
+  }
 });
  return (response.text);
 
 }
 
-module.exports = generateImage
+module.exports = generateCaption

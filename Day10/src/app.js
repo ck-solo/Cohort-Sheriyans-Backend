@@ -10,7 +10,7 @@ app.use(express.json())
 
 connectToDB()
 app.use('/auth',authRouter)
-app.use('/auth/post/',postRouter)
+app.use('/auth/post',postRouter)
 
 
 module.exports = app
