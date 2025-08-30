@@ -3,7 +3,7 @@ const app = require("./src/app");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const httpServer = createServer(app);
-const generateRespone = require("./src/services/ai.services");
+const generateRespone = require("./src/services/ai.services")
 const { userInfo } = require("os");
 const io = new Server(httpServer, {
   /* options */
@@ -25,12 +25,14 @@ io.on("connection", (socket) => {
         role:"user",
         parts:[{text:data}]
       })
+
       const response = await generateRespone(chatHistory);
       
       chatHistory.push({
         role:"model",
         parts:[{text:response}]
       })
+      
     socket.emit("ai-message-response", { response: response })
   })
 });
