@@ -8,19 +8,13 @@ function App() {
   const [conversation, setConversation] = useState([]);
 
   const handleSend = () => {
-    if (inputText.trim() === "") return;
+    if (inputText.trim() === "") return; 
 
     // Add user message to conversation
     setConversation([...conversation, { sender: "user", text: inputText }]);
     setInputText(""); // Clear input field
  
-    // Simulate bot response
-    setTimeout(() => {
-      setConversation((prev) => [
-        ...prev,
-        { sender: "bot", text: "This is a bot response!" },
-      ]);
-    }, 1000);
+     
 
     socket.emit('ai-message',inputText)
 
@@ -36,8 +30,8 @@ function App() {
     socketInstance.on('ai-message-response',(response)=>{
       const botMessage = {
         id: Date.now() ,
-        sender: "bot" + 1 ,
-        text: response,
+        sender: "bot",
+        text: response.response,
         timestamp: new Date().toLocaleTimeString()
       }
 
