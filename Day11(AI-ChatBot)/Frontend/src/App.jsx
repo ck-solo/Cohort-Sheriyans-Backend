@@ -1,17 +1,19 @@
-import React, { useState } from "react";
-import "./App.css";
+import React, { useState, useEffect } from "react";
+import { io } from "socket.io-client";
+import "./App.css"; 
 
 function App() {
-  const [input, setInput] = useState("");
+  const [socket, setsocket] = useState(null)
+  const [inputText, setInputText] = useState("");
   const [conversation, setConversation] = useState([]);
 
   const handleSend = () => {
-    if (input.trim() === "") return;
+    if (inputText.trim() === "") return;
 
     // Add user message to conversation
-    setConversation([...conversation, { sender: "user", text: input }]);
-    setInput(""); // Clear input field
-
+    setConversation([...conversation, { sender: "user", text: inputText }]);
+    setInputText(""); // Clear input field
+ 
     // Simulate bot response
     setTimeout(() => {
       setConversation((prev) => [
@@ -19,7 +21,31 @@ function App() {
         { sender: "bot", text: "This is a bot response!" },
       ]);
     }, 1000);
+
+    socket.emit('ai-message',inputText)
+
+    setInputText("")
+
+
   };
+
+  useEffect(() => {
+    const socketInstance = io("http://localhost:3000");
+    setsocket(socketInstance);
+
+    socketInstance.on('ai-message-response',(response)=>{
+      const botMessage = {
+        id: Date.now() ,
+        sender: "bot" + 1 ,
+        text: response,
+        timestamp: new Date().toLocaleTimeString()
+      }
+
+      setConversation((prev)=>[...prev, botMessage])
+    })
+
+},[]);
+ 
 
   return (
     <div className="chat-container">
@@ -37,8 +63,8 @@ function App() {
       <div className="chat-input">
         <input
           type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
+          value={inputText}
+          onChange={(e) => setInputText(e.target.value)}
           placeholder="Type your message..."
         />
         <button onClick={handleSend}>Send</button>

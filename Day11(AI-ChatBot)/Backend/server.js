@@ -6,7 +6,10 @@ const httpServer = createServer(app);
 const generateRespone = require("./src/services/ai.services")
 const { userInfo } = require("os");
 const io = new Server(httpServer, {
-  /* options */
+   cors: {
+       origin: "http://localhost:5173",
+        
+   }
 });
 
 const chatHistory = [];
@@ -19,7 +22,7 @@ io.on("connection", (socket) => {
 
   
   socket.on('ai-message',async (data)=>{
-      console.log("Message from client", data.prompt)
+      console.log("Message from client", data)
       
       chatHistory.push({
         role:"user",
@@ -34,6 +37,7 @@ io.on("connection", (socket) => {
       })
       
     socket.emit("ai-message-response", { response: response })
+
   })
 });
 
