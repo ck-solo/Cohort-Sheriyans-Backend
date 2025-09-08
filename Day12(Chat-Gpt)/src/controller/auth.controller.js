@@ -7,13 +7,13 @@ async function registerUser(req,res){
     const isUserAvail = await userModel.findOne({email})
 
     if(isUserAvail){
-        res.status(400).json({
+       return res.status(400).json({
             message:"User Already Exists"
         })
     }
 
     const hashPass = await bcrypt.hash(password, 10);
-    const user = userModel.create({
+    const user = await userModel.create({
         FullName:{
             FirstName,LastName
         },
@@ -60,7 +60,7 @@ async function loginUser(req,res){
         user:{
             email:user.email,
             id:user._id,
-            fullName: user.FullName
+            FullName: user.FullName
         }
     })
 }
