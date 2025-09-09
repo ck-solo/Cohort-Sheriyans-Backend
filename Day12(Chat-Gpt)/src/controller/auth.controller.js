@@ -2,7 +2,7 @@ const userModel = require('../models/user.models')
 const bcrypt = require('bcryptjs')
 const jwtToken = require('jsonwebtoken')
 async function registerUser(req,res){
-    const {fullName:{FirstName,LastName}, email , password} = req.body
+    const {FullName:{FirstName,LastName}, email , password} = req.body
       
     const isUserAvail = await userModel.findOne({email})
 
@@ -30,7 +30,7 @@ async function registerUser(req,res){
         user:{
             email:user.email,
             _id: user._id,
-            fullName: user.fullName
+            FullName: user.FullName
         }
     })
 }
@@ -41,13 +41,13 @@ async function loginUser(req,res){
     const user = await userModel.findOne({email})
 
     if(!user){
-        res.status(400).json({
+      return  res.status(400).json({
             message:"User not Found"
         })
     }
     const ispass = await bcrypt.compare(password, user.password)
     if(!ispass){
-        res.status(400).json({
+       return  res.status(400).json({
             message:"Invalid password"
         })
     }
