@@ -14,7 +14,7 @@ function initSocketServer(httpServer) {
     })
 
     io.on("connection",(socket)=>{
-        console.log("New socket connection", socket.id);
+        console.log("New Socket connection", socket.id);
     })
     return io
 
