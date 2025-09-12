@@ -2,7 +2,9 @@ const userModel = require('../models/user.models')
 const bcrypt = require('bcryptjs')
 const jwtToken = require('jsonwebtoken')
 async function registerUser(req,res){
-    const {FullName:{FirstName,LastName}, email , password} = req.body
+   const { FullName = {}, email, password } = req.body;
+const { FirstName, LastName } = FullName;
+
       
     const isUserAvail = await userModel.findOne({email})
 
