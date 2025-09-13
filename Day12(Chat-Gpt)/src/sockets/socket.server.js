@@ -1,39 +1,89 @@
-const { Server } = require('socket.io')
-const cookie = require('cookie')
-const userModel = require("../models/user.models") 
+const { Server } = require("socket.io");
+const cookie = require("cookie");
+const jwt = require("jsonwebtoken");
+const userModel = require("../models/user.models");
+const aiService = require("../services/api.service");
+const messageModel = require("../models/message.model");
 
 function initSocketServer(httpServer) {
-    const io = new Server(httpServer, {})
+  const io = new Server(httpServer, {});
 
-    io.use(async ( socket, next) =>{
-        const cookies = cookie.parse(socket.handshake.headers.cookie);
+  io.use(async (socket, next) => {
+    const cookies = cookie.parse(socket.handshake.headers?.cookie || "");
 
-        if(!cookies.token){
-            next(new Error ("Authentication Error : No token provided"))
+    if (!cookies.token) {
+      next(new Error("Authentication Error : No token provided"));
+    }
+
+    try {
+      const decoded = jwt.verify(cookies.token, process.env.JWT_TOKEN);
+
+      const user = await userModel.findById(decoded.id);
+      socket.user = user;
+
+      next();
+    } catch (err) {
+      next(new Error("Authentication error : Invalid token "));
+    }
+    console.log("Socket connection cookies:", cookies);
+  });
+
+  io.on("connection", (socket) => {
+    /*
+        messagePayload = {
+        chat: chatID,
+        content : message text content
         }
+        */
+    socket.on("ai-message", async (messagePayload) => {
+      console.log(messagePayload);
 
-        try{
-            const decoded = jwt.verify(cookies.token, process.env.JWT_TOKEN)
-            
-            const user = await userModel.findById(decoded.id)
-            socket.user = user
+      await messageModel.create({
+        chat: messagePayload.chat,
+        user: socket.user._id,
+        content: messagePayload.content,
+        role: "user",
+      });
 
-            next()
-        }
-        catch (err){
-            next(new Error("Authentication error : Invalid token "))
+      const chatHistory = (
+        await messageModel
+          .find({
+            chat: messagePayload.chat,
+          })
+          .sort({ createdAt: -1 })
+          .limit(20)
+          .lean()
+      ).reverse();
+      /* 
+        .sort({ createdAt: -1}) = descending order -1 stand for newest first
+        .limit(4). = limit only 4 
+        lean()). = Converts the Mongoose documents into plain JavaScript objects.
+        reverse()  = sorted newest first, this reverses the array so that the result is oldest-to-newest order
+         */
 
-        }
-        console.log("Socket connection cookies:", cookies)
- 
-    })
+      const response = await aiService.generateResponse(
+        chatHistory.map((item) => {
+          return {
+            role: item.role,
+            parts: [{ text: item.content }],
+          };
+        })
+      );
 
-    io.on("connection",(socket)=>{
-        console.log("New Socket connection", socket.user);
-        console.log("New Socket connection", socket.id);
-    })
-    return io
+      await messageModel.create({
+        chat: messagePayload.chat,
+        user: socket.user._id,
+        content: response,
+        role: "model",
+      });
 
+      socket.emit("ai-response", {
+        content: response,
+        chat: messagePayload.chat,
+      });
+    });
+  });
+  return io;
 }
 
 module.exports = initSocketServer;
