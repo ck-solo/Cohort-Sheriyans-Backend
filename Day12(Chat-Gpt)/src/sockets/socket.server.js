@@ -5,7 +5,9 @@ const userModel = require("../models/user.models");
 const aiService = require("../services/ai.service");
 const messageModel = require("../models/message.model");
 const { createMemory, queryMemory } = require("../services/vector.service");
-const { chat } = require("@pinecone-database/pinecone/dist/assistant/data/chat");
+const {
+  chat,
+} = require("@pinecone-database/pinecone/dist/assistant/data/chat");
 
 function initSocketServer(httpServer) {
   const io = new Server(httpServer, {});
@@ -38,74 +40,103 @@ function initSocketServer(httpServer) {
         }
         */
     socket.on("ai-message", async (messagePayload) => {
-       
-
+      /*
       const message = await messageModel.create({
         chat: messagePayload.chat,
         user: socket.user._id,
         content: messagePayload.content,
         role: "user",
       });
+      
+      const vector = await aiService.generateVector(messagePayload.content)
+      */
 
-    const vector = await aiService.generateVector(messagePayload.content)
- 
-    await createMemory({
-        vector,
-        messageId: message._id,
-        metadata: {
+      const [message, vectors] = await Promise.all([
+        messageModel.create({
+          chat: messagePayload.chat,
+          user: socket.user._id,
+          content: messagePayload.content,
+          role: "user",
+        }),
+        aiService.generateVector(messagePayload.content),
+        ]);
+
+       await createMemory({
+          vector: vectors,
+          messageId: message._id,
+          metadata: {
             chat: messagePayload.chat,
             user: socket.user._id,
-            text: messagePayload.content
-        }
-    })
+            text: messagePayload.content,
+          },
+        })
+      
 
+      /* 
     const memory = await queryMemory({
-     queryVector:vector,
-      limit :2,
-      metadata: {
-        user: socket.user._id
-      }
-    })
- 
-
-
+        queryVector: vector,
+        limit: 2,
+        metadata: {
+          user: socket.user._id,
+        },
+      });
+      
       const chatHistory = (
         await messageModel
-          .find({
+        .find({
             chat: messagePayload.chat,
           })
           .sort({ createdAt: -1 })
           .limit(20)
           .lean()
-      ).reverse();
+          ).reverse();
+        
+          */
+
       /* 
-        .sort({ createdAt: -1}) = descending order -1 stand for newest first
+          .sort({ createdAt: -1}) = descending order -1 stand for newest first
         .limit(4). = limit only 4 
         lean()). = Converts the Mongoose documents into plain JavaScript objects.
         reverse()  = sorted newest first, this reverses the array so that the result is oldest-to-newest order
          */
 
+       const [memory, chatHistory] = await Promise.all([
 
-        const stm = chatHistory.map((item) => {
-          return {
-            role: item.role,
-            parts: [{ text: item.content }],
-          };
-        })
+        queryMemory({
+          queryVector: vectors,
+          limit: 2,
+          metadata: {
+            user: socket.user._id,
+          }
+        }),
 
-        const ltm = [
-          {
-            role:"user",
-            parts: [ { text : `
+        messageModel.find({
+          chat:messagePayload.chat,
+        }).sort({createdAt: -1}).limit(20).lean().then(messages => messages.reverse() )
+      ]);
+
+      const stm = chatHistory.map((item) => {
+        return {
+          role: item.role,
+          parts: [{ text: item.content }],
+        };
+      });
+
+      const ltm = [
+        {
+          role: "user",
+          parts: [
+            {
+              text: `
               these are some previous messages from the chat , use them to generate a response
 
-              ${memory.map(item => item.metadata.text).join('/n')}
-              `}]
-          }
-        ]
+              ${memory.map((item) => item.metadata.text).join("/n")}
+              `,
+            },
+          ],
+        },
+      ];
 
-         console.log(ltm[0])
-         console.log(stm)
       const response = await aiService.generateResponse([...ltm, ...stm]);
 
       const responseMessage = await messageModel.create({
@@ -115,18 +146,17 @@ function initSocketServer(httpServer) {
         role: "model",
       });
 
-      const responseVectors = await aiService.generateVector(response)
+      const responseVectors = await aiService.generateVector(response);
 
       await createMemory({
-        vector : responseVectors,
-        messageId :responseMessage._id,
-        metadata:{
+        vector: responseVectors,
+        messageId: responseMessage._id,
+        metadata: {
           chat: messagePayload.chat,
-          user: socket.user._id ,
-          text: response
-        }
-
-      })
+          user: socket.user._id,
+          text: response,
+        },
+      });
 
       socket.emit("ai-response", {
         content: response,

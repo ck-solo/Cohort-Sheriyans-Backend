@@ -10,7 +10,7 @@ const cohortChatgptIndex = pc.Index('cohort-chatgpt')
 async function createMemory({vector, metadata, messageId}){
     await cohortChatgptIndex.upsert([{
         id:messageId,
-        values:vector,
+        values:Array.isArray(vector) ? vector : vector.values,
         metadata
     }])
 }
@@ -20,7 +20,7 @@ async function queryMemory({ queryVector, limit=5, metadata}){
     const data = await cohortChatgptIndex.query({
         vector: queryVector,
         topK: limit,
-        filter: metadata ? { metadata} : undefined,
+        filter: metadata ?  metadata : undefined,
         includeMetadata: true
     })
 
