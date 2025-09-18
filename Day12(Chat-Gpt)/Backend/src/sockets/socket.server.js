@@ -59,18 +59,17 @@ function initSocketServer(httpServer) {
           role: "user",
         }),
         aiService.generateVector(messagePayload.content),
-        ]);
+      ]);
 
-       await createMemory({
-          vector: vectors,
-          messageId: message._id,
-          metadata: {
-            chat: messagePayload.chat,
-            user: socket.user._id,
-            text: messagePayload.content,
-          },
-        })
-      
+      await createMemory({
+        vector: vectors,
+        messageId: message._id,
+        metadata: {
+          chat: messagePayload.chat,
+          user: socket.user._id,
+          text: messagePayload.content,
+        },
+      });
 
       /* 
     const memory = await queryMemory({
@@ -100,19 +99,23 @@ function initSocketServer(httpServer) {
         reverse()  = sorted newest first, this reverses the array so that the result is oldest-to-newest order
          */
 
-       const [memory, chatHistory] = await Promise.all([
-
+      const [memory, chatHistory] = await Promise.all([
         queryMemory({
           queryVector: vectors,
           limit: 2,
           metadata: {
             user: socket.user._id,
-          }
+          },
         }),
 
-        messageModel.find({
-          chat:messagePayload.chat,
-        }).sort({createdAt: -1}).limit(20).lean().then(messages => messages.reverse() )
+        messageModel
+          .find({
+            chat: messagePayload.chat,
+          })
+          .sort({ createdAt: -1 })
+          .limit(20)
+          .lean()
+          .then((messages) => messages.reverse()),
       ]);
 
       const stm = chatHistory.map((item) => {
