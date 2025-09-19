@@ -1,0 +1,51 @@
+:root {
+  --background-light: #ffffff;
+  --text-light: #000000;
+  --primary-light: #007bff;
+  --primary-hover-light: #0056b3;
+
+  --background-dark: #121212;
+  --text-dark: #ffffff;
+  --primary-dark: #007bff;
+  --primary-hover-dark: #0056b3;
+}
+
+body.light-theme {
+  background-color: var(--background-light);
+  color: var(--text-light);
+}
+
+body.dark-theme {
+  background-color: var(--background-dark);
+  color: var(--text-dark);
+}
+
+.form {
+  background-color: var(--background-light);
+}
+
+.dark-theme .form {
+  background-color: var(--background-dark);
+  box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+}
+
+.light-theme .form {
+  background-color: var(--background-light);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dark-theme .form-button {
+  background-color: var(--primary-dark);
+}
+
+.dark-theme .form-button:hover {
+  background-color: var(--primary-hover-dark);
+}
+
+.light-theme .form-button {
+  background-color: var(--primary-light);
+}
+
+.light-theme .form-button:hover {
+  background-color: var(--primary-hover-light);
+}
