@@ -1,6 +1,6 @@
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg"; 
-import AppRouter from './AppRouter'
+import AppRouter from './appRouter'
 import "./App.css";
 
 function App() {

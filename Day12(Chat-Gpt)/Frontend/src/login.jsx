@@ -4,18 +4,20 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
 
 
+
 const Login = () => {
+  const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({ email: '', password: '' });
   const navigate = useNavigate()
 
   function handleChange(e) {
-    const { email, password } = e.target;
-    setForm({email: form.value, password: form.value});
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value});
   };
 
   async function handleSubmit(e) {
-    e.preventDefault();
-    setSubmitting(true);
+    e.preventDefault(); 
+    setSubmitting(true)
     // placeholder: integrate with backend/login service
     console.log('login', form);
     alert('Login (placeholder)');

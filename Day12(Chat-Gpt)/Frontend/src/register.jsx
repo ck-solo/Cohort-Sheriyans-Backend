@@ -1,19 +1,46 @@
 import React, { useState } from 'react';
 import './styles/theme.css';
-
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom';
 const Register = () => {
   const [form, setForm] = useState({ email: '', firstName: '', lastName: '', password: '' });
+  const [submitting, setsubmitting] = useState(false)
+  const navigate = useNavigate()
 
-  const handleChange = (e) => {
+  function handleChange(e) {
     const { name, value } = e.target;
     setForm((s) => ({ ...s, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
+    setsubmitting(true)
     // placeholder: integrate with backend/register service
     console.log('register data', form);
-    alert('Registered (placeholder)');
+    axios.post("http://localhost:3000/api/auth/register",{
+      email: form.email,
+     FullName:{
+       firstName : form.firstName,
+      lastName : form.lastName,
+     },
+      password: form.password
+    },
+  {
+    withCredentials:true
+  }).then((res)=>{
+    console.log(res)
+    navigate('/')
+  }).catch((err)=>{
+    console.log(err);
+    alert('Registeration failed ')
+  })
+    try{
+
+    } catch(err){
+        console.log(err);
+      } finally {
+        setsubmitting(false)
+      }
   };
 
   return (
