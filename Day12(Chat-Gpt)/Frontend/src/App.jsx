@@ -1,14 +1,15 @@
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg"; 
-import AppRouter from './appRouter'
-import "./App.css";
+import reactLogo from './assets/react.svg'
+import viteLogo from '/vite.svg'
+import './App.css'
+import AppRouter from './AppRouter';
 
-function App() {
+function App() { 
+
   return (
     <>
-      <AppRouter />
+    <AppRouter />
     </>
-  );
+  )
 }
 
-export default App;
+export default App
