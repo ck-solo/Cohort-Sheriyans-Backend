@@ -180,3 +180,34 @@ body {
   text-decoration: none;
   font-weight: 600;
 }
+
+/* Theme toggle (small circular button) */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.06);
+  background: var(--card);
+  color: var(--text);
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(2,6,23,0.06);
+}
+.theme-toggle:focus { outline: 2px solid rgba(37,99,235,0.14); }
+
+/* Decorative toggle states and interactions */
+.theme-toggle { transition: transform 160ms ease, box-shadow 200ms ease, background 200ms ease; }
+.theme-toggle:hover { transform: translateY(-2px) scale(1.04); }
+.theme-toggle svg { width: 18px; height: 18px; display: block; }
+
+/* Light mode decorative glow */
+:root .theme-toggle { background: linear-gradient(180deg, #ffffff, #fbfdff); border-color: rgba(2,6,23,0.06); }
+:root .theme-toggle svg .sun-core { filter: drop-shadow(0 4px 8px rgba(255,165,0,0.12)); }
+
+/* Dark mode decorative background */
+[data-theme="dark"] .theme-toggle { background: linear-gradient(180deg, #0f1724, #081122); border-color: rgba(255,255,255,0.06); }
+[data-theme="dark"] .theme-toggle svg .moon { filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5)); }
+
+
