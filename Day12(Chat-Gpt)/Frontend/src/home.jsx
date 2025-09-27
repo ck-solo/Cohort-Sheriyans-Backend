@@ -1,10 +1,15 @@
 import React from 'react';
+import './styles/theme.css';
 
 const Home = () => {
   return (
-    <div style={{ padding: 24 }}>
-      <h1>Home</h1>
-      <p>Placeholder home page. Replace with your chat UI or content.</p>
+    <div className="page-center">
+      <div className="container" style={{ maxWidth: 880 }}>
+        <div className="card">
+          <h1 style={{ marginTop: 0 }}>Welcome</h1>
+          <p className="label">This is the home page. Use the navigation to go to Login or Register.</p>
+        </div>
+      </div>
     </div>
   );
 };
